@@ -28,22 +28,24 @@ public class ArchitectureTest(ITestOutputHelper testOutputHelper)
             .Or()
             .HaveNameEndingWith("Query")
             .GetResult();
-
         testOutputHelper.WriteLine($"{result}");
 
         result.IsSuccessful.Should().BeTrue();
     }
 
     [Fact]
-    public void Api_ShouldNot_Depend_On_Application()
+    public void Api_ShouldNot_Depend_On_Any_Layer()
     {
         var result = Types
             .InAssemblies(Assemblies)
             .That()
             .ResideInNamespace("Api")
             .ShouldNot()
-            .HaveDependencyOn("Application")
+            .HaveDependencyOnAny("Application", "Domain", "Infrastructure")
             .GetResult();
+
+        // Note: Program.cs has top-level statements that are not in the namespace Api. However, Api depends on
+        // Infrastructure one time, and one time only, for setting up dependency injection.
 
         LogFailingTypes(result);
 
@@ -51,46 +53,14 @@ public class ArchitectureTest(ITestOutputHelper testOutputHelper)
     }
 
     [Fact]
-    public void Api_ShouldNot_Depend_On_Domain()
-    {
-        var result = Types
-            .InAssemblies(Assemblies)
-            .That()
-            .ResideInNamespace("Api")
-            .ShouldNot()
-            .HaveDependencyOn("Domain")
-            .GetResult();
-
-        LogFailingTypes(result);
-
-        result.IsSuccessful.Should().BeTrue();
-    }
-
-    [Fact]
-    public void Api_ShouldNot_Depend_On_Infrastructure()
-    {
-        var result = Types
-            .InAssemblies(Assemblies)
-            .That()
-            .ResideInNamespace("Api")
-            .ShouldNot()
-            .HaveDependencyOn("Infrastructure")
-            .GetResult();
-
-        LogFailingTypes(result);
-
-        result.IsSuccessful.Should().BeTrue();
-    }
-
-    [Fact]
-    public void Application_ShouldNot_Depend_On_Infrastructure()
+    public void Application_ShouldNot_Depend_On_Api_Or_Infrastructure()
     {
         var result = Types
             .InAssemblies(Assemblies)
             .That()
             .ResideInNamespace("Application")
             .ShouldNot()
-            .HaveDependencyOn("Infrastructure")
+            .HaveDependencyOnAny("Api", "Infrastructure")
             .GetResult();
 
         LogFailingTypes(result);
@@ -99,14 +69,14 @@ public class ArchitectureTest(ITestOutputHelper testOutputHelper)
     }
 
     [Fact]
-    public void Domain_ShouldNot_Depend_On_Infrastructure()
+    public void Domain_ShouldNot_Depend_On_Any_Layer()
     {
         var result = Types
             .InAssemblies(Assemblies)
             .That()
             .ResideInNamespace("Domain")
             .ShouldNot()
-            .HaveDependencyOn("Infrastructure")
+            .HaveDependencyOnAny("Api", "Application", "Infrastructure")
             .GetResult();
 
         LogFailingTypes(result);

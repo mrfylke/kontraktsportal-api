@@ -20,14 +20,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="../../src/Api/Api.csproj"/>
-        <ProjectReference Include="../../src/Application/Application.csproj"/>
-        <ProjectReference Include="../../src/Domain/Domain.csproj"/>
-        <ProjectReference Include="../../src/Infrastructure/Infrastructure.csproj"/>
+        <Using Include="Xunit"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Using Include="Xunit"/>
+      <ProjectReference Include="..\..\src\Api\Api.csproj" />
     </ItemGroup>
 
 </Project>
