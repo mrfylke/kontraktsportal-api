@@ -16,6 +16,8 @@ public class DatabaseContext(IOptions<InfrastructureConfig> config) : DbContext,
         modelBuilder.Entity<Deviation>().HasKey(d => d.Id);
         modelBuilder.Entity<DeviationType>().HasKey(d => d.Id);
         modelBuilder.Entity<DeviationCategory>().HasKey(d => d.Id);
+
+        modelBuilder.Entity<Deviation>().Property(d => d.CreatedAt).HasDefaultValueSql("now()");
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
